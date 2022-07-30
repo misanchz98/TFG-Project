@@ -1,18 +1,19 @@
 import numpy as np
-import pandas as pd
 from sklearn.model_selection import train_test_split
+import pandas as pd
 
 # Step 1: Load data as DataFrame
-def load_csv_data(csv_path):
+def load_csv_data(path):
     """Load and return data from csv file as DataFrame"""
-    df = pd.read_csv(csv_path)
+
+    df = pd.read_csv(path)
+
     return df
 
 # Step 2: Recode RoomOccupancyCount column
 def recode_dataset_output(df):
     """Recode dataset's output, if Room_Occupancy_Count > 0, we change its value into 1"""
 
-    # Applying the condition
     df["Room_Occupancy_Count"] = np.where(df["Room_Occupancy_Count"] > 0, 1, 0)
 
 
