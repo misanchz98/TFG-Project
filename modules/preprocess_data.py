@@ -1,15 +1,22 @@
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
 
-# Step 1: Recode RoomOccupancyCount column
+# Step 1: Load data as DataFrame
+def load_csv_data(csv_path):
+    """Load and return data from csv file as DataFrame"""
+    df = pd.read_csv(csv_path)
+    return df
+
+# Step 2: Recode RoomOccupancyCount column
 def recode_dataset_output(df):
-    """ Recode dataset's output, if Room_Occupancy_Count > 0, we change its value into 1"""
+    """Recode dataset's output, if Room_Occupancy_Count > 0, we change its value into 1"""
 
     # Applying the condition
     df["Room_Occupancy_Count"] = np.where(df["Room_Occupancy_Count"] > 0, 1, 0)
 
 
-# Step 2: Remove of time columns (Time and Date)
+# Step 3: Remove of time columns (Time and Date)
 def remove_time_columns(df):
     """Remove Time and Date columns"""
 
@@ -17,7 +24,7 @@ def remove_time_columns(df):
     df.drop(['Date'], axis=1, inplace=True)
 
 
-# Step 3: Split dataset into train and test
+# Step 4: Split dataset into train and test
 def split_dataset(df, test_size=0.25):
     """Split dataset into train and test"""
 
@@ -25,7 +32,7 @@ def split_dataset(df, test_size=0.25):
 
     return train_df, test_df
 
-# Step 4: Split train dataset into features (X) and output (y)
+# Step 5: Split train dataset into features (X) and output (y)
 def get_features(df):
     """Transform the dataset into another dataset but only with feature columns"""
 
