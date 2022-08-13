@@ -8,7 +8,7 @@ from cumulator import base
 
 # CODECARBON
 def train_LR_codecarbon(train_features, train_output):
-    lg_pipeline = Pipeline([("scaler", StandardScaler()), ("logistic_regression", LogisticRegression()), ])
+    lg_pipeline = Pipeline([("scaler", StandardScaler()), ("logistic_regression", LogisticRegression())])
     tracker = EmissionsTracker()
 
     tracker.start()
@@ -26,7 +26,7 @@ def train_RF_codecarbon(train_features, train_output, n_estimators=100, max_leaf
     print(f"Emissions: {emissions} kg")
 
 def train_SVC_codecarbon(train_features, train_output):
-    svm_pipeline = Pipeline([("scaler", StandardScaler()), ("linear_svc", LinearSVC(C=1, loss="hinge", max_iter=1500)), ])
+    svm_pipeline = Pipeline([("scaler", StandardScaler()), ("linear_svc", LinearSVC(C=1, loss="hinge", max_iter=2000))])
     tracker = EmissionsTracker()
 
     tracker.start()
@@ -36,7 +36,7 @@ def train_SVC_codecarbon(train_features, train_output):
 
 # CUMULATOR
 def train_LR_cumulator(train_features, train_output):
-    lg_pipeline = Pipeline([("scaler", StandardScaler()), ("logistic_regression", LogisticRegression()), ])
+    lg_pipeline = Pipeline([("scaler", StandardScaler()), ("logistic_regression", LogisticRegression())])
     cumulator = base.Cumulator()
     cumulator.run(lg_pipeline.fit, X=train_features, y=train_output)
     print(cumulator.total_carbon_footprint())
@@ -52,7 +52,7 @@ def train_RF_cumulator(train_features, train_output, n_estimators=100, max_leaf_
 
 
 def train_SVC_cumulator(train_features, train_output):
-    svm_pipeline = Pipeline([("scaler", StandardScaler()), ("linear_svc", LinearSVC(C=1, loss="hinge", max_iter=1500)), ])
+    svm_pipeline = Pipeline([("scaler", StandardScaler()), ("linear_svc", LinearSVC(C=1, loss="hinge", max_iter=2000))])
     cumulator = base.Cumulator()
     cumulator.run(svm_pipeline.fit, X=train_features, y=train_output)
     print(cumulator.total_carbon_footprint())
