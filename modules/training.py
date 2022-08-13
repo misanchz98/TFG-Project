@@ -26,7 +26,7 @@ def train_RF_codecarbon(train_features, train_output, n_estimators=100, max_leaf
     print(f"Emissions: {emissions} kg")
 
 def train_SVC_codecarbon(train_features, train_output):
-    svm_pipeline = Pipeline([("scaler", StandardScaler()), ("linear_svc", LinearSVC(C=1, loss="hinge", dual=False))])
+    svm_pipeline = Pipeline([("scaler", StandardScaler()), ("linear_svc", LinearSVC(C=1, loss="hinge", dual=True))])
     tracker = EmissionsTracker()
 
     tracker.start()
@@ -52,7 +52,7 @@ def train_RF_cumulator(train_features, train_output, n_estimators=100, max_leaf_
 
 
 def train_SVC_cumulator(train_features, train_output):
-    svm_pipeline = Pipeline([("scaler", StandardScaler()), ("linear_svc", LinearSVC(C=1, loss="hinge", dual=False))])
+    svm_pipeline = Pipeline([("scaler", StandardScaler()), ("linear_svc", LinearSVC(C=1, loss="hinge", dual=True))])
     cumulator = base.Cumulator()
     cumulator.run(svm_pipeline.fit, X=train_features, y=train_output)
     print(cumulator.total_carbon_footprint())
