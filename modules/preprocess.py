@@ -26,10 +26,10 @@ def remove_time_columns(df):
 
 
 # Step 4: Split dataset into train and test
-def split_dataset(df, test_size=0.25):
+def split_dataset(df, train_size=None):
     """Split dataset into train and test"""
 
-    train_df, test_df = train_test_split(df, test_size=test_size)
+    train_df, test_df = train_test_split(df, train_size=train_size)
 
     return train_df, test_df
 
