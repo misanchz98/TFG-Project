@@ -4,7 +4,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
 from codecarbon import EmissionsTracker
-from preprocess import split_dataset, get_features, get_output
+from modules.preprocess import split_dataset, get_features, get_output
 from cumulator import base
 
 
