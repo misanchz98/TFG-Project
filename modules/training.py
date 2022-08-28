@@ -144,3 +144,4 @@ def train_LR_cumulator(df, train_size=0.25):
     tracker = base.Cumulator()
     tracker.run(lg_pipeline.fit, X=X, y=y)
     tracker.display_carbon_footprint()
+    tracker.detect_cpu()
