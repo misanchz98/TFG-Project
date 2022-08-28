@@ -143,4 +143,4 @@ def train_LR_cumulator(df, train_size=0.25):
     lg_pipeline = Pipeline([("scaler", StandardScaler()), ("logistic_regression", LogisticRegression())])
     tracker = base.Cumulator()
     tracker.run(lg_pipeline.fit, X=X, y=y)
-    tracker.total_carbon_footprint()
+    tracker.display_carbon_footprint()
