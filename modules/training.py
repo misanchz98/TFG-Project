@@ -5,7 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
-from carbontracker.tracker import CarbonTracker
+from cumulator import base
 from modules.preprocess import split_dataset, get_features, get_output
 
 
@@ -130,3 +130,18 @@ def train_SVC_eco2ai(df, train_size=0.25):
     svm_pipeline.fit(X, y)
     tracker.stop()
 
+# CUMULATOR
+def train_LR_cumulator(df, train_size=0.25):
+    # Step 1: split dataset into training and test
+    train_df, test_df = split_dataset(df, train_size=train_size)
+
+    # Step 2: split training into features and output
+    X = get_features(train_df)
+    y = get_output(train_df)
+
+    # Step 3: train LogisticRegression model and track with eco2ai
+    lg_pipeline = Pipeline([("scaler", StandardScaler()), ("logistic_regression", LogisticRegression())])
+    tracker = base.Cumulator()
+    tracker.run(lg_pipeline.fit, X=X, y=y)
+    tracker.total_carbon_footprint()
+    tracker.display_carbon_footprint()
