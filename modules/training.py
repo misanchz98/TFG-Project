@@ -142,7 +142,7 @@ def train_LR_carbontracker(df, train_size=0.25, max_epochs=1):
     tracker = CarbonTracker(epochs=max_epochs)
 
     for epoch in range(max_epochs):
-        tracker.epoch_start()()
+        tracker.epoch_start()
         lg_pipeline.fit(X, y)
         tracker.epoch_end()
 
