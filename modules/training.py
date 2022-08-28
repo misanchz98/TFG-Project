@@ -127,23 +127,3 @@ def train_SVC_eco2ai(df, train_size=0.25):
     svm_pipeline.fit(X, y)
     tracker.stop()
 
-#  CARBONTRACKER
-
-def train_LR_carbontracker(df, train_size=0.25, max_epochs=1):
-    # Step 1: split dataset into training and test
-    train_df, test_df = split_dataset(df, train_size=train_size)
-
-    # Step 2: split training into features and output
-    X = get_features(train_df)
-    y = get_output(train_df)
-
-    # Step 3: train LogisticRegression model and track with carbontracker
-    lg_pipeline = Pipeline([("scaler", StandardScaler()), ("logistic_regression", LogisticRegression())])
-    tracker = CarbonTracker(epochs=max_epochs, components="cpu")
-
-    for epoch in range(max_epochs):
-        tracker.epoch_start()
-        lg_pipeline.fit(X, y)
-        tracker.epoch_end()
-
-    tracker.stop()
