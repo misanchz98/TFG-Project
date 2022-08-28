@@ -1,0 +1,2 @@
+project_name,experiment_description(model type etc.),start_time,duration(s),power_consumption(kWTh),CO2_emissions(kg),CPU_name,GPU_name,OS,region/country
+TFG-Project,training the Logistic Regression model,2022-08-28 10:55:02,589.4461233615875,2.711827651691864e-06,5.410502939273027e-07,"Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz/1 device(s), TDP:65.0", 0 device(s),Linux,ES/Aragon
