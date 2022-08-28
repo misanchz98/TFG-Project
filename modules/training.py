@@ -139,7 +139,7 @@ def train_LR_carbontracker(df, train_size=0.25, max_epochs=1):
 
     # Step 3: train LogisticRegression model and track with carbontracker
     lg_pipeline = Pipeline([("scaler", StandardScaler()), ("logistic_regression", LogisticRegression())])
-    tracker = CarbonTracker(epochs=max_epochs)
+    tracker = CarbonTracker(epochs=max_epochs, components="cpu")
 
     for epoch in range(max_epochs):
         tracker.epoch_start()
