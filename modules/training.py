@@ -5,7 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
-from cumulator import base
+from src.cumulator import base
 from modules.preprocess import split_dataset, get_features, get_output
 
 
