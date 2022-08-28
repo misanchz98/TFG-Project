@@ -157,7 +157,7 @@ def train_LR_eit(df, train_size=0.25):
 
     # Step 3: train LogisticRegression model and track with experiment-impact-tracker
     lg_pipeline = Pipeline([("scaler", StandardScaler()), ("logistic_regression", LogisticRegression())])
-    tracker = ImpactTracker('eit_emissions.csv')
+    tracker = ImpactTracker('eit_emissions')
     tracker.launch_impact_monitor()
     lg_pipeline.fit(X,y)
     tracker.get_latest_info_and_check_for_errors()
