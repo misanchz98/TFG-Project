@@ -79,7 +79,7 @@ def train_LR_eco2ai(df, train_size=0.25):
         project_name="TFG_Project",
         experiment_description="training LogisticRegression model",
         file_name="eco2ai_emissions.csv",
-        alpha_2_code="ES"
+        alpha_2_code="ES-MD"
     )
 
     tracker.start()
@@ -101,7 +101,7 @@ def train_RF_eco2ai(df, train_size=0.25, n_estimators=100, max_leaf_nodes=16, n_
         project_name="TFG_Project",
         experiment_description="training RandomForest model",
         file_name="eco2ai_emissions.csv",
-        alpha_2_code="ES"
+        alpha_2_code="ES-MD"
     )
 
     tracker.start()
@@ -123,7 +123,7 @@ def train_SVC_eco2ai(df, train_size=0.25):
         project_name="TFG_Project",
         experiment_description="training LogisticRegression model",
         file_name="eco2ai_emissions.csv",
-        alpha_2_code="ES"
+        alpha_2_code="ES-MD"
     )
 
     tracker.start()
