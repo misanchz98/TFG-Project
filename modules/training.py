@@ -6,6 +6,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
 from src.cumulator import base
+from carbontracker.tracker import CarbonTracker
 from experiment_impact_tracker.compute_tracker import ImpactTracker
 from modules.preprocess import split_dataset, get_features, get_output
 
@@ -161,3 +162,24 @@ def train_LR_eit(df, train_size=0.25):
     tracker.launch_impact_monitor()
     lg_pipeline.fit(X,y)
     tracker.get_latest_info_and_check_for_errors()
+
+# CARBONTRACKER
+def train_LR_carbontracker(df, train_size=0.25, max_epochs=1):
+    # Step 1: split dataset into training and test
+    train_df, test_df = split_dataset(df, train_size=train_size)
+
+    # Step 2: split training into features and output
+    X = get_features(train_df)
+    y = get_output(train_df)
+
+    # Step 3: train LogisticRegression model and track with experiment-impact-tracker
+    lg_pipeline = Pipeline([("scaler", StandardScaler()), ("logistic_regression", LogisticRegression())])
+    tracker = CarbonTracker(epochs=max_epochs)
+
+    # Training loop.
+    for epoch in range(max_epochs):
+        tracker.epoch_start()
+        lg_pipeline.fit(X,y)
+        tracker.epoch_end()
+
+    tracker.stop()
