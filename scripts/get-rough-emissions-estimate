@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import sys
+import pandas as pd
+
+import experiment_impact_tracker
+
+
+from experiment_impact_tracker.emissions.rough_emissions_estimator import RoughEmissionsEstimator
+
+gpu_data = pd.read_csv(os.path.join(os.path.dirname(experiment_impact_tracker.__file__), 'gpu/data/tdp.csv'))
+cpu_data = pd.read_csv(os.path.join(os.path.dirname(experiment_impact_tracker.__file__), 'cpu/data/cpu_tdp.csv'))
+
+def cmdline_args():
+    # Make parser object
+    p = argparse.ArgumentParser(description=
+        """
+        This estimates the amount of energy used and emission based on IP address of your server, GPU type, experiment length, and some utilization factor. 
+        This is similar to what is done by https://mlco2.github.io/impact/#compute. Please also cite their paper if using this script.
+        """,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    
+    p.add_argument("--experiment-length-seconds", type=float, help="The length of your experiment in seconds.")
+    p.add_argument("--location", type=str, help="If no IP address provided, please provide an address: e.g., Montreal, QC, Canada")    
+    p.add_argument("--gpu", type=str, help="The GPU name, from [{}]".format(", ".join(gpu_data["name"])))
+    p.add_argument("--cpu", type=str, help="The CPU name, from [{}]".format(", ".join(cpu_data["Model"])))
+    p.add_argument("--gpu-utilization-factor", type=float, help="What fraction of the GPU do you think your application used (e.g., 1.0 would be 100% utilization on average throughout the life of the experiment).")
+    p.add_argument("--cpu-utilization-factor", type=float, help="What fraction of the CPU do you think your application used (e.g., .3 would be 30% cpu utlization on average throughout the life of the experiment)")
+    return(p.parse_args())
+
+
+if __name__ == '__main__':
+    
+    if sys.version_info<(3,0,0):
+        sys.stderr.write("You need python 3.0 or later to run this script\n")
+        sys.exit(1)
+
+    args = cmdline_args()
+    emissions_estimator = RoughEmissionsEstimator(gpu=args.gpu,
+                                                  cpu=args.cpu,
+                                                  gpu_utilization_factor=args.gpu_utilization_factor,
+                                                  cpu_utilization_factor=args.cpu_utilization_factor,
+                                                  location=args.location,
+                                                  experiment_length_seconds=args.experiment_length_seconds)
+    print(emissions_estimator.carbon_impact_statement)

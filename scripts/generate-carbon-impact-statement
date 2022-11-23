@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+
+from __future__ import print_function
+
+import argparse
+import json
+import os
+import re
+import sys
+from datetime import datetime
+from importlib import import_module
+from itertools import combinations
+from pprint import pprint
+from shutil import copyfile
+
+import numpy as np
+import pandas as pd
+import scipy
+from deepdiff import DeepDiff  # For Deep Difference of 2 objects
+from jinja2 import Environment, FileSystemLoader
+
+import experiment_impact_tracker
+from experiment_impact_tracker.create_graph_appendix import (
+    create_graphs, create_scatterplot_from_df)
+from experiment_impact_tracker.data_interface import DataInterface
+from experiment_impact_tracker.data_utils import (load_data_into_frame,
+                                                  load_initial_info,
+                                                  zip_data_and_info)
+from experiment_impact_tracker.emissions.common import \
+    get_realtime_carbon_source
+from experiment_impact_tracker.emissions.constants import PUE
+from experiment_impact_tracker.emissions.get_region_metrics import \
+    get_zone_name_by_id
+from experiment_impact_tracker.stats import (get_average_treatment_effect,
+                                             run_test)
+from experiment_impact_tracker.utils import gather_additional_info
+
+pd.set_option('display.max_colwidth', -1)
+
+
+
+def main(arguments):
+
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('logdirs', nargs='+',
+                        help="Input directories", type=str)
+    parser.add_argument('ISO3_COUNTRY_CODE')
+    args = parser.parse_args(arguments)
+
+    data_interface = DataInterface(args.logdirs)
+
+    total_power = data_interface.total_power
+    kg_carbon = data_interface.kg_carbon
+    PUE = data_interface.PUE
+    total_wall_clock_time = data_interface.exp_len_hours
+
+    cscc_filepath = os.path.join(os.path.dirname(experiment_impact_tracker.__file__),
+                                'emissions/data/cscc_db_v2.csv')
+
+    ssc = pd.read_csv(cscc_filepath)
+
+    # only use short-run model
+    ssc = ssc[ssc["run"] == "bhm_sr"]
+    ssc = ssc[ssc["SSP"] == "SSP2"]
+    ssc = ssc[ssc["ISO3"] == args.ISO3_COUNTRY_CODE]
+    ssc = ssc[np.isnan(ssc["dr"])] # use only growth adjusted models
+    ssc = ssc[ssc["prtp"] == 2] # a growth adjusted discount rate with 2% pure rate of time preference
+    ssc = ssc[ssc["eta"] == "1p5"] # IES of 1.5
+    ssc = ssc[ssc["RCP"] == "rcp60"] # rcp 6, middle of the road
+    ssc = ssc[ssc["dmgfuncpar"] == "bootstrap"]
+    ssc = ssc[ssc["climate"] == "uncertain"] 
+    
+    median = ssc["50%"]
+    lower = ssc["16.7%"]
+    upper = ssc["83.3%"]
+
+    median_carbon_cost = (kg_carbon / 1000.) * float(median)
+    upper_carbon_cost = (kg_carbon / 1000.) * float(upper)
+    lower_carbon_cost = (kg_carbon / 1000.) * float(lower)
+
+    bibtex_nature = """
+    @article{ricke2018country,
+        title={Country-level social cost of carbon},
+        author={Ricke, Katharine and Drouet, Laurent and Caldeira, Ken and Tavoni, Massimo},
+        journal={Nature Climate Change},
+        volume={8},
+        number={10},
+        pages={895},
+        year={2018},
+        publisher={Nature Publishing Group}
+    }
+    """
+
+    bibtex_experiment_impact_tracker = """
+    @misc{henderson2020systematic,
+        title={Towards the Systematic Reporting of the Energy and Carbon Footprints of Machine Learning},
+        author={Peter Henderson and Jieru Hu and Joshua Romoff and Emma Brunskill and Dan Jurafsky and Joelle Pineau},
+        year={2020},
+        eprint={2002.05651},
+        archivePrefix={arXiv},
+        primaryClass={cs.CY}
+    }
+    """
+    print(
+        (f"This work contributed {kg_carbon:.6f} kg of $\\text{{CO}}_{{2eq}}$ to the atmosphere and used "
+         f"{total_power:.6f} kWh of "
+        f"electricity,  having a {args.ISO3_COUNTRY_CODE}-specific social cost of carbon of \${median_carbon_cost:.2f} (\${lower_carbon_cost:.2f}, "
+         f"\${upper_carbon_cost:.2f}). Carbon "
+        "accounting information can be found here: "
+        "\\url{{<TODO: Insert URL of generated HTML appendix with all info here>}}.  The social cost of carbon uses "
+        "models from \\citep{{ricke2018country}} and this statement and carbon emissions information was generated  "
+        "using \\emph{{experiment-impact-tracker}}"
+        f"\\citep{{henderson2019climate}}. The PUE multiplier is assumed to be {PUE}. The total wall-clock time of "
+         f"all experiments was {total_wall_clock_time:.3f} hours."
+         f"\n\n{bibtex_nature}\n\n{bibtex_experiment_impact_tracker}")
+    )
+
+
+    
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))
