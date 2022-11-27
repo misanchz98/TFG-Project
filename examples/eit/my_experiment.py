@@ -65,10 +65,5 @@ def my_experiment() -> None:
 
     print(f"Please find your experiment logs in: {tmp_dir}")
 
-    data_interface = DataInterface([tmp_dir])
-
-    print('kg: ', data_interface.kg_carbon)
-    print('total_power: ', data_interface.total_power)
-
 if __name__ == "__main__":
     my_experiment()
