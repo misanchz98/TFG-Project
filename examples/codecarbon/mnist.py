@@ -1,5 +1,4 @@
 import tensorflow as tf
-
 from codecarbon import EmissionsTracker
 
 mnist = tf.keras.datasets.mnist
@@ -23,6 +22,6 @@ model.compile(optimizer="adam", loss=loss_fn, metrics=["accuracy"])
 
 tracker = EmissionsTracker()
 tracker.start()
-model.fit(x_train, y_train, epochs=100)
+model.fit(x_train, y_train, epochs=10)
 emissions: float = tracker.stop()
-print(f"Emissions: {emissions} kg")
+print(emissions)
