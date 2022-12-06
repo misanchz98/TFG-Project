@@ -2,7 +2,7 @@
 
 from sklearn import datasets
 import tensorflow as tf
-from carbontracker.tracker import CarbonTracker
+from src.cumulator import base
 
 # Step 1: Split the data into X and y
 iris = datasets.load_iris()
@@ -23,14 +23,17 @@ model.compile(optimizer='rmsprop',
 
 # Step 4: Train the model and track with carbontracker
 max_epochs = 100
-tracker = CarbonTracker(epochs=max_epochs)
+cumulator = base.Cumulator()
 
 # Training loop.
 for epoch in range(max_epochs):
-    tracker.epoch_start()
+    cumulator.on()
 
     model.fit(X, y, batch_size=50)
 
-    tracker.epoch_end()
+    cumulator.off()
 
-tracker.stop()
+# Show results
+print('Computation costs: ', cumulator.computation_costs())
+print('Total carbon footprint', cumulator.total_carbon_footprint())
+cumulator.display_carbon_footprint()
