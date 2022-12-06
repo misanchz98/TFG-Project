@@ -4,7 +4,7 @@ import tempfile
 import torch
 
 from experiment_impact_tracker.compute_tracker import ImpactTracker
-from experiment_impact_tracker.data_interface import DataInterface
+
 
 class Experiment:
     def __init__(self):
@@ -64,6 +64,7 @@ def my_experiment() -> None:
         exp.train()
 
     print(f"Please find your experiment logs in: {tmp_dir}")
+
 
 if __name__ == "__main__":
     my_experiment()
