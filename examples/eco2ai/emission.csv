@@ -1,0 +1,4 @@
+id,project_name,experiment_description,epoch,start_time,duration(s),power_consumption(kWh),CO2_emissions(kg),CPU_name,GPU_name,OS,region/country,cost
+f8db576d-ef96-4262-8099-5a1814ee9560,Eco2AI_Test_ML,training logistic regression model,,2022-12-13 16:45:09,0.479311466217041,7.59271273352624e-09,1.5148600810294875e-09,"Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz/1 device(s), TDP:65.0", 0 device(s),Linux,ES/Madrid,
+831547f6-c998-463c-8bae-682663553bc6,Eco2AI_Test_ML,training logistic regression model,,2022-12-13 16:47:59,0.3593227863311767,4.636810283500381e-09,9.251132037125783e-10,"Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz/1 device(s), TDP:65.0", 0 device(s),Linux,ES/Madrid,
+cd38bee9-d669-4fca-8c0c-6f40c64d8192,Eco2AI_Test_ML,training logistic regression model,N/A,2022-12-13 16:48:18,0.3493645191192627,3.412231819501004e-08,6.807914314677428e-09,"Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz/1 device(s), TDP:65.0", 0 device(s),Linux,ES/Madrid,nan
