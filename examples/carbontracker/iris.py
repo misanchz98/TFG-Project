@@ -22,7 +22,7 @@ model.compile(optimizer='rmsprop',
               metrics=['accuracy'])
 
 # Step 4: Train the model and track with carbontracker
-max_epochs = 100
+max_epochs = 5
 tracker = CarbonTracker(epochs=max_epochs)
 
 # Training loop.

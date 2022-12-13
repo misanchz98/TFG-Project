@@ -22,7 +22,7 @@ model.compile(optimizer='rmsprop',
               metrics=['accuracy'])
 
 # Step 4: Train the model and track with carbontracker
-max_epochs = 100
+max_epochs = 10
 cumulator = base.Cumulator()
 
 # Training loop.
@@ -34,6 +34,4 @@ for epoch in range(max_epochs):
     cumulator.off()
 
 # Show results
-print('Computation costs: ', cumulator.computation_costs())
-print('Total carbon footprint', cumulator.total_carbon_footprint())
 cumulator.display_carbon_footprint()
