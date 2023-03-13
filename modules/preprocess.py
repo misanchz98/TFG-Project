@@ -48,3 +48,6 @@ def get_output(df):
     output = df["Room_Occupancy_Count"]
 
     return output
+
+def save_modified_dataset(df):
+    df.to_csv('../dataset/New_Occupancy_Estimation.csv', index=False)

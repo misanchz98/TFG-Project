@@ -1,8 +1,5 @@
-import sys
 import tempfile
-
 import torch
-
 from experiment_impact_tracker.compute_tracker import ImpactTracker
 
 
