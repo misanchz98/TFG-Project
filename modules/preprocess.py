@@ -49,5 +49,7 @@ def get_output(df):
 
     return output
 
-def save_modified_dataset(df):
-    df.to_csv('../dataset/New_Occupancy_Estimation.csv', index=False)
+def save_modified_dataset(df, file_name):
+    """Save dataframe in csv file"""
+
+    df.to_csv('../dataset/' + file_name, index=False)
