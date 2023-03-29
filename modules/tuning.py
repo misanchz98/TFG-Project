@@ -10,7 +10,7 @@ import warnings
 
 
 def get_model_hyperparameters(model):
-    """Given the model name, return its hyperparameters
+    """Given the model name, returns its hyperparameters
     and their current value"""
 
     if model == "LR":
@@ -26,6 +26,8 @@ def get_model_hyperparameters(model):
 
 
 def create_pipeline(model):
+    """Given the model name, returns its estimator in scikit learn"""
+
     if model == "LR":
         estimator = LogisticRegression(max_iter=500)
     elif model == "RF":
@@ -41,6 +43,8 @@ def create_pipeline(model):
 
 
 def get_param_grid(model):
+    """Given the model name, returns its parameters grid"""
+
     if model == "LR":
         param_grid = {
             'estimator__penalty': ['l1', 'l2', 'none'],
@@ -74,7 +78,9 @@ def get_param_grid(model):
     return param_grid
 
 
-def tuning_with_grid(model, X_train, y_train, cv=10):
+def tuning_with_grid(model, X_train, y_train, cv=5):
+    """Tunes model with GridSearchCV"""
+
     warnings.filterwarnings('ignore')
     pipeline = create_pipeline(model)
     param_grid = get_param_grid(model)
@@ -85,6 +91,8 @@ def tuning_with_grid(model, X_train, y_train, cv=10):
 
 
 def tuning_with_randomized(model, X_train, y_train, cv=5):
+    """Tunes model with RandomizedSearchCV"""
+
     pipeline = create_pipeline(model)
     param_grid = get_param_grid(model)
     rscv = RandomizedSearchCV(estimator=pipeline, param_distributions=param_grid, cv=cv, verbose=2)
@@ -94,19 +102,15 @@ def tuning_with_randomized(model, X_train, y_train, cv=5):
 
 
 def get_best_estimator(model, X_train, y_train, cv=5):
-    gscv_best_estimator, gscv_best_score = tuning_with_grid(model, X_train, y_train, cv)
-    print("Best estimator Grid: ", gscv_best_estimator)
-    print("Accuracy Grid: ", gscv_best_score)
+    """Tune model with GridSearchCV and RandomizedSearchCV and
+    returns the tuned model with the biggest accuracy"""
 
+    gscv_best_estimator, gscv_best_score = tuning_with_grid(model, X_train, y_train, cv)
     rscv_best_estimator, rscv_best_score = tuning_with_randomized(model, X_train, y_train, cv)
-    print("Best estimator Randomized: ", rscv_best_estimator)
-    print("Accuracy Randomized: ", rscv_best_score)
 
     if gscv_best_score >= rscv_best_score:
         best_estimator = gscv_best_estimator
     else:
         best_estimator = rscv_best_estimator
-
-    print("FINAL BEST ESTIMATOR: ", best_estimator)
 
     return best_estimator

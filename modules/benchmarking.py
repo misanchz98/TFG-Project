@@ -1,6 +1,8 @@
 import pandas as pd
 
 def create_benchmarking_df():
+    """Creates basic benchmarking Dataframe"""
+
     benchmarking = {
         "Herramientas": ['codecarbon', 'eco2ai'],
         "Logistic Regression": [0, 0],
