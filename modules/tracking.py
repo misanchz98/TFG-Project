@@ -26,7 +26,7 @@ def track_training_eco2ai(model, X_train, y_train):
     tracker.stop()
 
 def track_benchmarking_codecabon(estimators_list, X_train, y_train):
-    """Tracks benchmarking's training process with codecarbon and eco2ai"""
+    """Tracks benchmarking's training process with codecarbon"""
 
     if os.path.exists("emissions.csv"):
         os.remove("emissions.csv")

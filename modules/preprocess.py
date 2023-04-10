@@ -49,7 +49,8 @@ def get_output(df):
 
     return output
 
-def save_modified_dataset(df, file_name):
-    """Save dataframe in csv file"""
+def save_in_csv_file(df, path):
+    """Save dataframe in csv file in the given path"""
 
-    df.to_csv('../dataset/' + file_name, index=False)
+    df.to_csv(path, index=False)
+
