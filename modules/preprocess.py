@@ -48,6 +48,13 @@ def save_in_csv_file(df, path):
 
     df.to_csv(path, index=False)
 
+def get_number_duplicated_rows(df):
+    """Prints the number of duplicated rows in the given Dataframe"""
+
+    num_dups = df.duplicated().sum()
+
+    print(f"Number of duplicated rows: {num_dups}")
+
 def delete_duplicates(df):
     """Delete duplicates from given Dataframe"""
 
@@ -125,10 +132,13 @@ def preprocess_room_occupancy_dataset(df):
     remove_time_columns(df)
 
     # Step 3: Delete duplicate rows
-    delete_duplicates(df)
+    #delete_duplicates(df)
 
     # Step 5: Treat outliers
     features_with_outliers = get_features_with_outliers(df)
     flooring_and_capping(df, features_with_outliers)
+
+    # Step 6: Delete duplicate rows again
+    delete_duplicates(df)
 
     return df

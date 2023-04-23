@@ -8,7 +8,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import RandomizedSearchCV
 import warnings
 
-
 def get_model_hyperparameters(model):
     """Given the model name, returns its hyperparameters
     and their current value"""
@@ -78,6 +77,7 @@ def get_param_grid(model):
 def tuning_with_grid(model, X_train, y_train, X_test, y_test, cv=3):
     """Tunes model with GridSearchCV"""
 
+    warnings.filterwarnings("ignore")
     estimator = get_estimator(model)
     param_grid = get_param_grid(model)
     grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=cv, verbose=2)
@@ -104,17 +104,3 @@ def tuning_with_randomized(model, X_train, y_train, X_test, y_test, cv=3):
 
     return randomized_search.best_estimator_
 
-
-def get_best_estimator(model, X_train, y_train, cv=2):
-    """Tune model with GridSearchCV and RandomizedSearchCV and
-    returns the tuned model with the biggest accuracy"""
-
-    gscv_best_estimator, gscv_best_score = tuning_with_grid(model, X_train, y_train, cv)
-    rscv_best_estimator, rscv_best_score = tuning_with_randomized(model, X_train, y_train, cv)
-
-    if gscv_best_score >= rscv_best_score:
-        best_estimator = gscv_best_estimator
-    else:
-        best_estimator = rscv_best_estimator
-
-    return best_estimator
