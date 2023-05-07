@@ -1,59 +1,88 @@
 import pandas as pd
-from modules import preprocess
+from modules import preprocess, tracking, evaluating
 
-def create_benchmarking_df():
-    """Creates basic benchmarking Dataframe"""
-
-    benchmarking = {
-        "Herramientas": ['codecarbon', 'eco2ai'],
-        "Logistic Regression(kWh)": [0, 0],
-        "Random Forest(kWh)": [0, 0],
-        "Support Vector Machines(kWh)": [0, 0],
-        "Multilayer Perceptron(kWh)": [0, 0],
-        "Eficiencia energetica": [0, 0],
-    }
-
-    df = pd.DataFrame(benchmarking)
+def create_benchmarking_structure():
+    df = pd.DataFrame({
+        "Algoritmos": ['Logistic Regression', 'Random Forest', 'Support Vector Machines', 'Multilayer Perceptron'],
+        "CodeCarbon (kWh)": [0, 0, 0, 0],
+        "Eco2AI (kWh)": [0, 0, 0, 0],
+        "Precision": [0, 0, 0, 0],
+        "Recall": [0, 0, 0, 0],
+        "F Score": [0, 0, 0, 0],
+    })
 
     return df
 
-def get_column_by_index(index):
-    """Returns benchmarking's column name given index result"""
 
-    if index == 0:
-        column = 'Logistic Regression(kWh)'
-    elif index == 1:
-        column = 'Random Forest(kWh)'
-    elif index == 2:
-        column = 'Support Vector Machines(kWh)'
-    elif index == 3:
-        column = 'Multilayer Perceptron(kWh)'
-
-    return column
-
-def create_benchmarking_csv():
-    # Create codecarbon and eco2ai Dataframes
+def get_energy_consumed_codecarbon():
     df_codecarbon = preprocess.load_csv_data('emissions.csv')
+
+    return df_codecarbon['energy_consumed']
+
+
+def get_energy_consumed_eco2ai():
     df_eco2ai = preprocess.load_csv_data('emission.csv')
 
-    # Create Dataframe for benchmarking
-    df_benchmarking = create_benchmarking_df()
+    return df_eco2ai['power_consumption(kWh)']
 
-    # Take results from codecarbon and eco2ai Dataframes
-    energy_codecarbon = df_codecarbon['energy_consumed']
-    energy_eco2ai = df_eco2ai['power_consumption(kWh)']
 
-    # Save results in benchmarking Dataframe
+def get_model_energy_consumed(index):
+    df_energy_codecarbon = get_energy_consumed_codecarbon()
+    df_energy_eco2ai = get_energy_consumed_eco2ai()
 
-    # Codecarbon
-    for index, result in enumerate(energy_codecarbon):
-        column = get_column_by_index(index)
-        df_benchmarking.at[0, column] = result
+    model_energy_codecarbon = df_energy_codecarbon.at[index]
+    model_energy_eco2ai = df_energy_eco2ai.at[index]
 
-    # Eco2AI
-    for index, result in enumerate(energy_eco2ai):
-        column = get_column_by_index(index)
-        df_benchmarking.at[1, column] = result
+    return model_energy_codecarbon, model_energy_eco2ai
 
-    # Save benchmarking Dataframe in csv file
-    preprocess.save_in_csv_file(df_benchmarking, 'benchmarking.csv')
+
+def get_model_index(model):
+    index = -1
+
+    if model == 'LR':
+        index = 0
+    elif model == 'RF':
+        index = 1
+    elif model == 'SVM':
+        index = 2
+    elif model == 'MLP':
+        index = 3
+
+    return index
+
+
+def store_model_tracking_data(model, df_benchmarking):
+    model_index = get_model_index(model)
+
+    model_energy_codecarbon, model_energy_eco2ai = get_model_energy_consumed(model_index)
+
+    df_benchmarking.at[model_index, "CodeCarbon (kWh)"] = model_energy_codecarbon
+    df_benchmarking.at[model_index, "Eco2AI (kWh)"] = model_energy_eco2ai
+
+
+def store_model_metrics(model, y_pred, y_test, df_benchmarking):
+    model_index = get_model_index(model)
+
+    precision, recall, f_score = evaluating.get_classification_metrics(y_pred, y_test)
+
+    df_benchmarking.at[model_index, "Precision"] = precision
+    df_benchmarking.at[model_index, "Recall"] = recall
+    df_benchmarking.at[model_index, "F Score"] = f_score
+
+
+def create_benchmarking(X_train, y_train, X_test, y_test, cv=5):
+    # Delete old result csv files
+    preprocess.delete_csv_file('emissions.csv')
+    preprocess.delete_csv_file('emission.csv')
+
+    # Create benchmarking Dataframe structure
+    df_benchmarking = create_benchmarking_structure()
+
+    models_list = ['LR', 'RF', 'SVM', 'MLP']
+
+    for model in models_list:
+        y_pred = tracking.track_model_training(model, X_train, y_train, X_test, cv)
+        store_model_tracking_data(model, df_benchmarking)
+        store_model_metrics(model, y_pred, y_test, df_benchmarking)
+
+    return df_benchmarking

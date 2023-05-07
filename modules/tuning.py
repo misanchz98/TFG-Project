@@ -4,103 +4,66 @@ from sklearn import svm
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, RobustScaler
 from sklearn.model_selection import RandomizedSearchCV
-import warnings
-
-def get_model_hyperparameters(model):
-    """Given the model name, returns its hyperparameters
-    and their current value"""
-
-    if model == "LR":
-        estimator = LogisticRegression()
-    elif model == "RF":
-        estimator = RandomForestClassifier()
-    elif model == "SVM":
-        estimator = svm.SVC(kernel="rbf")
-    elif model == "MLP":
-        estimator = MLPClassifier()
-
-    return estimator.get_params()
 
 
-def get_estimator(model):
-    """Given the model name, returns its estimator in scikit learn"""
+def get_grid_search_LR(cv):
+    pipeline = Pipeline([('scaler', RobustScaler()), ('estimator', LogisticRegression(max_iter=500))])
 
-    if model == "LR":
-        estimator = Pipeline([('scaler', StandardScaler()), ('estimator', LogisticRegression(max_iter=500))])
-    elif model == "RF":
-        estimator = RandomForestClassifier()
-    elif model == "SVM":
-        estimator = Pipeline([('scaler', StandardScaler()), ('estimator', svm.SVC())])
-    elif model == "MLP":
-        estimator = Pipeline([('scaler', StandardScaler()), ('estimator', MLPClassifier(max_iter=500))])
+    param_grid = {
+        'estimator__penalty': ['l1', 'l2'],
+        'estimator__C': [0.001, 0.01, 0.1, 1, 10, 100, 1000],
+        'estimator__solver': ['lbfgs', 'liblinear'],
+    }
 
-    return estimator
+    grid_search = GridSearchCV(estimator=pipeline, param_grid=param_grid, cv=cv, verbose=1)
 
-
-def get_param_grid(model):
-    """Given the model name, returns its parameters grid"""
-
-    if model == "LR":
-        param_grid = {
-            'estimator__penalty': ['l1', 'l2'],
-            'estimator__C': [0.001, 0.01, 0.1, 1, 10, 100, 1000],
-            'estimator__solver': ['lbfgs', 'liblinear']
-        }
-    elif model == "RF":
-        param_grid = {
-            'bootstrap': [True, False],
-            'max_depth': [3, 6, 9],
-            'max_leaf_nodes': [3, 6, 9],
-            'max_features': ['log2', 'sqrt', None],
-            'min_samples_leaf': [1, 2, 4],
-            'min_samples_split': [2, 5, 10],
-            'n_estimators': [25, 50, 100, 150]}
-    elif model == "SVM":
-        param_grid = {
-            'estimator__C': [0.1, 1, 10, 100, 1000],
-            'estimator__gamma': [1, 0.1, 0.01, 0.001, 0.0001],
-            'estimator__kernel': ['rbf']}
-    elif model == "MLP":
-        param_grid = {
-            'estimator__hidden_layer_sizes': [(50, 50, 50), (50, 100, 50), (100,)],
-            'estimator__activation': ['identity', 'logistic', 'tanh', 'relu'],
-            'estimator__solver': ['sgd', 'adam', 'lbfgs'],
-            'estimator__alpha': [0.0001, 0.05],
-            'estimator__learning_rate': ['constant', 'invscaling', 'adaptive'],
-        }
-
-    return param_grid
+    return grid_search
 
 
-def tuning_with_grid(model, X_train, y_train, X_test, y_test, cv=3):
-    """Tunes model with GridSearchCV"""
+def get_grid_search_SVM(cv):
+    estimator = svm.SVC()
 
-    warnings.filterwarnings("ignore")
-    estimator = get_estimator(model)
-    param_grid = get_param_grid(model)
-    grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=cv, verbose=2)
-    grid_search.fit(X_train, y_train)
+    param_grid = {
+        'C': [0.1, 1, 10, 100, 1000],
+        'gamma': [1, 0.1, 0.01, 0.001, 0.0001],
+        'kernel': ['rbf']
+    }
 
-    print('Best estimator: ', grid_search.best_estimator_)
-    print('Test set score: ', grid_search.score(X_test, y_test))
-    print('Mean cross-validated score of the best_estimator: ', grid_search.best_score_)
+    grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=cv, verbose=1)
 
-    return grid_search.best_estimator_
+    return grid_search
 
 
-def tuning_with_randomized(model, X_train, y_train, X_test, y_test, cv=3):
-    """Tunes model with RandomizedSearchCV"""
+def get_randomized_search_RF(cv):
+    estimator = RandomForestClassifier()
 
-    estimator = get_estimator(model)
-    param_grid = get_param_grid(model)
-    randomized_search = RandomizedSearchCV(estimator=estimator, param_distributions=param_grid, cv=cv, verbose=2)
-    randomized_search.fit(X_train, y_train)
+    param_grid = {
+        'bootstrap': [True, False],
+        'max_depth': [80, 90, 100, 110],
+        'max_features': [2, 3],
+        'min_samples_leaf': [3, 4, 5],
+        'min_samples_split': [8, 10, 12],
+        'n_estimators': [100, 200, 300, 1000]
+    }
 
-    print('Best estimator: ', randomized_search.best_estimator_)
-    print('Test set score: ', randomized_search.score(X_test, y_test))
-    print('Mean cross-validated score of the best_estimator: ', randomized_search.best_score_)
+    randomized_search = RandomizedSearchCV(estimator=estimator, param_distributions=param_grid, cv=cv, verbose=1)
 
-    return randomized_search.best_estimator_
+    return randomized_search
 
+
+def get_randomized_search_MLP(cv):
+    estimator = Pipeline([('scaler', StandardScaler()), ('estimator', MLPClassifier(max_iter=500))])
+
+    param_grid = {
+        'estimator__hidden_layer_sizes': [(100, 100, 100), (100, 150, 100)],
+        'estimator__activation': ['identity', 'logistic', 'tanh', 'relu'],
+        'estimator__solver': ['sgd', 'adam', 'lbfgs'],
+        'estimator__alpha': [0.0001, 0.001, 0.05, 0.01],
+        'estimator__learning_rate': ['constant', 'invscaling', 'adaptive'],
+    }
+
+    randomized_search = RandomizedSearchCV(estimator=estimator, param_distributions=param_grid, cv=cv, verbose=1)
+
+    return randomized_search
