@@ -8,7 +8,7 @@ def LR_tracking(X_train, y_train, X_test, cv):
     """Tracks Logistic Regression training process with CodeCarbon and
     Eco2AI and returns the prediction"""
 
-    warnings.filterwarnings('ignore')
+    #warnings.filterwarnings('ignore')
     grid_search = tuning.get_grid_search_LR(cv)
 
     # Track with codecarbon and eco2AI

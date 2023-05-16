@@ -9,7 +9,7 @@ from sklearn.model_selection import RandomizedSearchCV
 
 
 def get_grid_search_LR(cv):
-    pipeline = Pipeline([('scaler', RobustScaler()), ('estimator', LogisticRegression(max_iter=500))])
+    pipeline = Pipeline([('scaler', StandardScaler()), ('estimator', LogisticRegression(max_iter=500))])
 
     param_grid = {
         'estimator__penalty': ['l1', 'l2'],
