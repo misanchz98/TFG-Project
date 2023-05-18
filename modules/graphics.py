@@ -46,7 +46,7 @@ def plot_energy_consumed_and_fscore(df_benchmarking):
     fig, ax = plt.subplots(2, 1, figsize=(10, 7))
     fig.subplots_adjust(hspace=0.5)
 
-    ax[0].plot(codecarbon_energy, [], color='green', marker='o')
+    ax[0].plot(codecarbon_energy, fscore, color='green', marker='o')
     ax[0].set_xlabel('Energía consumida (kWh)')
     ax[0].set_ylabel('F Score')
     ax[0].set_title('CodeCarbon')

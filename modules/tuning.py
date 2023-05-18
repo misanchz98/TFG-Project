@@ -10,12 +10,13 @@ import numpy as np
 
 
 def get_grid_search_LR(cv):
-    pipeline = Pipeline([('scaler', RobustScaler()), ('estimator', LogisticRegression(max_iter=500))])
+    pipeline = Pipeline([('scaler', RobustScaler()), ('estimator', LogisticRegression())])
 
     param_grid = {
-        'estimator__penalty': ['l1', 'l2'],  # Tipo de penalización (L1 o L2)
-        'estimator__C': np.logspace(-4, 4, 20),  # Inverso de la fuerza de regularización
-        'estimator__solver': ['liblinear']  # Algoritmo de optimización (liblinear o saga)
+        'estimator__penalty': ['l1', 'l2'],
+        'estimator__C': np.logspace(-4, 4, 20),
+        'estimator__solver': ['liblinear'],
+        'estimator__max_iter': [400, 500, 600]
     }
 
     grid_search = GridSearchCV(estimator=pipeline, param_grid=param_grid, cv=cv, verbose=1)
@@ -55,7 +56,7 @@ def get_randomized_search_RF(cv):
 
 
 def get_randomized_search_MLP(cv):
-    estimator = Pipeline([('scaler', StandardScaler()), ('estimator', MLPClassifier(max_iter=500))])
+    pipeline = Pipeline([('scaler', StandardScaler()), ('estimator', MLPClassifier())])
 
     param_grid = {
         'estimator__hidden_layer_sizes': [(100, 100, 100), (100, 150, 100)],
@@ -63,8 +64,9 @@ def get_randomized_search_MLP(cv):
         'estimator__solver': ['sgd', 'adam', 'lbfgs'],
         'estimator__alpha': [0.0001, 0.001, 0.05, 0.01],
         'estimator__learning_rate': ['constant', 'invscaling', 'adaptive'],
+        'estimator__max_iter': [400, 500, 600]
     }
 
-    randomized_search = RandomizedSearchCV(estimator=estimator, param_distributions=param_grid, cv=cv, verbose=1)
+    randomized_search = RandomizedSearchCV(estimator=pipeline, param_distributions=param_grid, cv=cv, verbose=1)
 
     return randomized_search
