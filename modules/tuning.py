@@ -6,15 +6,16 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler, RobustScaler
 from sklearn.model_selection import RandomizedSearchCV
+import numpy as np
 
 
 def get_grid_search_LR(cv):
-    pipeline = Pipeline([('scaler', StandardScaler()), ('estimator', LogisticRegression(max_iter=500))])
+    pipeline = Pipeline([('scaler', RobustScaler()), ('estimator', LogisticRegression(max_iter=500))])
 
     param_grid = {
-        'estimator__penalty': ['l1', 'l2'],
-        'estimator__C': [0.001, 0.01, 0.1, 1, 10, 100, 1000],
-        'estimator__solver': ['lbfgs', 'liblinear'],
+        'estimator__penalty': ['l1', 'l2'],  # Tipo de penalización (L1 o L2)
+        'estimator__C': np.logspace(-4, 4, 20),  # Inverso de la fuerza de regularización
+        'estimator__solver': ['liblinear']  # Algoritmo de optimización (liblinear o saga)
     }
 
     grid_search = GridSearchCV(estimator=pipeline, param_grid=param_grid, cv=cv, verbose=1)
