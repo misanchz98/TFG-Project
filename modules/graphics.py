@@ -3,6 +3,7 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import numpy as np
 
+
 def plot_confusion_matrix(model, y_test, y_pred):
     cm = confusion_matrix(y_test, y_pred, labels=model.classes_)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=model.classes_)
