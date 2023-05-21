@@ -1,6 +1,7 @@
 import pandas as pd
 from modules import preprocess, tracking, evaluating
 
+
 def create_benchmarking_structure():
     df = pd.DataFrame({
         "Algoritmos": ['Logistic Regression', 'Random Forest', 'Support Vector Machines', 'Multilayer Perceptron'],
@@ -15,13 +16,13 @@ def create_benchmarking_structure():
 
 
 def get_energy_consumed_codecarbon():
-    df_codecarbon = preprocess.load_csv_data('emissions.csv')
+    df_codecarbon = preprocess.load_csv_data('codecarbon.csv')
 
     return df_codecarbon['energy_consumed']
 
 
 def get_energy_consumed_eco2ai():
-    df_eco2ai = preprocess.load_csv_data('emission.csv')
+    df_eco2ai = preprocess.load_csv_data('eco2ai.csv')
 
     return df_eco2ai['power_consumption(kWh)']
 
@@ -72,8 +73,8 @@ def store_model_metrics(model, y_pred, y_test, df_benchmarking):
 
 def create_benchmarking(X_train, y_train, X_test, y_test, cv=5):
     # Delete old result csv files
-    preprocess.delete_csv_file('emissions.csv')
-    preprocess.delete_csv_file('emission.csv')
+    preprocess.delete_csv_file('codecarbon.csv')
+    preprocess.delete_csv_file('eco2ai.csv')
 
     # Create benchmarking Dataframe structure
     df_benchmarking = create_benchmarking_structure()
@@ -86,3 +87,5 @@ def create_benchmarking(X_train, y_train, X_test, y_test, cv=5):
         store_model_metrics(model, y_pred, y_test, df_benchmarking)
 
     return df_benchmarking
+
+

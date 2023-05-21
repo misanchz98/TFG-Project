@@ -60,11 +60,11 @@ def get_randomized_search_MLP(cv):
 
     param_grid = {
         'estimator__hidden_layer_sizes': [(100, 100, 100), (100, 150, 100)],
-        'estimator__activation': ['identity', 'logistic', 'tanh', 'relu'],
-        'estimator__solver': ['sgd', 'adam', 'lbfgs'],
-        'estimator__alpha': [0.0001, 0.001, 0.05, 0.01],
+        'estimator__activation': ['identity', 'logistic'],
+        'estimator__solver': ['adam', 'sgd'],
+        'estimator__alpha': [0.01, 0.02, 0.03, 0.04, 0.05],
         'estimator__learning_rate': ['constant', 'invscaling', 'adaptive'],
-        'estimator__max_iter': [400, 500, 600]
+        'estimator__max_iter': [625, 650, 700]
     }
 
     randomized_search = RandomizedSearchCV(estimator=pipeline, param_distributions=param_grid, cv=cv, verbose=1)

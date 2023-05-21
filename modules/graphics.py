@@ -38,22 +38,29 @@ def plot_models_energy_consumed(df_benchmarking):
     plt.show()
 
 
-def plot_energy_consumed_and_fscore(df_benchmarking):
-    codecarbon_energy = df_benchmarking['CodeCarbon (kWh)']
-    eco2ai_energy = df_benchmarking['Eco2AI (kWh)']
+def plot_models_evaluation_metrics(df_benchmarking):
+    models = ['LR', 'RF', 'SVM', 'MLP']
+
+    precision = df_benchmarking['Precision']
+    recall = df_benchmarking['Recall']
     fscore = df_benchmarking['F Score']
 
-    fig, ax = plt.subplots(2, 1, figsize=(10, 7))
-    fig.subplots_adjust(hspace=0.5)
+    n = len(models)
+    x = np.arange(n)
+    width = 0.25
 
-    ax[0].plot(codecarbon_energy, fscore, color='green', marker='o')
-    ax[0].set_xlabel('Energía consumida (kWh)')
-    ax[0].set_ylabel('F Score')
-    ax[0].set_title('CodeCarbon')
+    fig, ax = plt.subplots()
 
-    ax[1].plot(eco2ai_energy, fscore, color='blue', marker='o')
-    ax[1].set_xlabel('Energía consumida (kWh)')
-    ax[1].set_ylabel('F Score')
-    ax[1].set_title('Eco2AI')
+    ax.bar(x - width, precision, width=width, label='Precision')
+    ax.bar(x, recall, width=width, label='Recall')
+    ax.bar(x + width, fscore, width=width, label='F Score')
 
+    ax.set_ylim(0.99, 1)
+
+    ax.set_xlabel('Modelos')
+    ax.set_title('Métricas de evaluación')
+
+    plt.xticks(x, models)
+    plt.legend(loc='best')
     plt.show()
+

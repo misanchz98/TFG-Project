@@ -1,23 +1,29 @@
-from codecarbon import EmissionsTracker
+from codecarbon import EmissionsTracker, OfflineEmissionsTracker
 from eco2ai import Tracker
 from modules import tuning
-import warnings
 
 
 def LR_tracking(X_train, y_train, X_test, cv):
     """Tracks Logistic Regression training process with CodeCarbon and
     Eco2AI and returns the prediction"""
 
-    #warnings.filterwarnings('ignore')
     grid_search = tuning.get_grid_search_LR(cv)
 
     # Track with codecarbon and eco2AI
-    tracker_codecarbon = EmissionsTracker()
+    tracker_codecarbon = EmissionsTracker(
+        project_name="Training LR",
+        tracking_mode='process',
+        output_file="codecarbon.csv",
+        measure_power_secs=15
+    )
 
     tracker_eco2AI = Tracker(
         project_name="TFG Project",
         experiment_description="Training LR",
         alpha_2_code="ES-MD",
+        cpu_processes="current",
+        file_name="eco2ai.csv",
+        measure_period=15,
         ignore_warnings=True
     )
 
@@ -42,12 +48,20 @@ def RF_tracking(X_train, y_train, X_test, cv):
     randomized_search = tuning.get_randomized_search_RF(cv)
 
     # Track with codecarbon and eco2AI
-    tracker_codecarbon = EmissionsTracker()
+    tracker_codecarbon = EmissionsTracker(
+        project_name="Training RF",
+        output_file="codecarbon.csv",
+        tracking_mode='process',
+        measure_power_secs=15
+    )
 
     tracker_eco2AI = Tracker(
         project_name="TFG Project",
         experiment_description="Training RF",
         alpha_2_code="ES-MD",
+        cpu_processes='current',
+        file_name="eco2ai.csv",
+        measure_period=15,
         ignore_warnings=True
     )
 
@@ -72,12 +86,20 @@ def SVM_tracking(X_train, y_train, X_test, cv):
     grid_search = tuning.get_grid_search_SVM(cv)
 
     # Track with codecarbon and eco2AI
-    tracker_codecarbon = EmissionsTracker()
+    tracker_codecarbon = EmissionsTracker(
+        project_name="Training SVM",
+        output_file="codecarbon.csv",
+        tracking_mode="process",
+        measure_power_secs=15
+    )
 
     tracker_eco2AI = Tracker(
         project_name="TFG Project",
         experiment_description="Training SVM",
         alpha_2_code="ES-MD",
+        cpu_processes='current',
+        file_name="eco2ai.csv",
+        measure_period=15,
         ignore_warnings=True
     )
 
@@ -103,12 +125,20 @@ def MLP_tracking(X_train, y_train, X_test, cv):
     randomized_search = tuning.get_randomized_search_MLP(cv)
 
     # Track with codecarbon and eco2AI
-    tracker_codecarbon = EmissionsTracker()
+    tracker_codecarbon = EmissionsTracker(
+        project_name="Training MLP",
+        output_file="codecarbon.csv",
+        tracking_mode="process",
+        measure_power_secs=15
+    )
 
     tracker_eco2AI = Tracker(
         project_name="TFG Project",
         experiment_description="Training MLP",
         alpha_2_code="ES-MD",
+        cpu_processes='current',
+        file_name="eco2ai.csv",
+        measure_period=15,
         ignore_warnings=True
     )
 
