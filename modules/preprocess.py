@@ -3,38 +3,109 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 import os
 
+"""
+This module supplies the vital functions to perform 
+data preprocessing and csv files treatment.
+"""
+
+
 def load_csv_data(path):
-    """Load and return data from csv file as DataFrame"""
+
+    """
+    Loads data from csv file as DataFrame.
+
+    Parameters
+    ----------
+    path : string
+       Csv file path.
+
+    Returns
+    -------
+    pandas.core.frame.DataFrame
+        DataFrame with csv file data.
+    """
 
     df = pd.read_csv(path)
 
     return df
 
 
-# Step 2: Recode RoomOccupancyCount column
+def delete_csv_file(file):
+
+    """
+    Deletes the given csv file.
+
+    Parameters
+    ----------
+    file : string
+       Csv file.
+    """
+
+    if os.path.exists(file):
+        os.remove(file)
+
+
+def save_in_csv_file(df, path):
+
+    """
+    Saves DataFrame in csv file in the given path.
+
+    Parameters
+    ----------
+    df : pandas.core.frame.DataFrame
+       DataFrame we want to save in csv file.
+
+    path : string
+        Path where we want to store the csv file.
+    """
+
+    df.to_csv(path, index=False)
+
+
 def recode_dataset_output(df):
-    """Recode dataset's output, if Room_Occupancy_Count > 0, we change its value into 1"""
+
+    """
+    Recodes dataset's output, if Room_Occupancy_Count > 0, we change its value into 1.
+
+    Parameters
+    ----------
+    df : pandas.core.frame.DataFrame
+       Dataset DataFrame.
+    """
 
     df["Room_Occupancy_Count"] = np.where(df["Room_Occupancy_Count"] > 0, 1, 0)
 
 
 def remove_time_columns(df):
-    """Remove Time and Date columns"""
+
+    """
+    Removes Time and Date columns.
+
+    Parameters
+    ----------
+    df : pandas.core.frame.DataFrame
+       Dataset DataFrame.
+    """
 
     df.drop(['Time'], axis=1, inplace=True)
     df.drop(['Date'], axis=1, inplace=True)
 
 
-def split_dataset(X, y, test_size=0.3):
-    """Splits X (features) and y (output) into train and test"""
-
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
-
-    return X_train, X_test, y_train, y_test
-
-
 def get_features(df):
-    """Transform the dataset into another dataset but only with feature columns"""
+
+    """
+    Gets dataset's features columns.
+
+    Parameters
+    ----------
+    df : pandas.core.frame.DataFrame
+        Dataset DataFrame.
+
+    Returns
+    -------
+    pandas.core.frame.DataFrame
+        Dataset's features.
+    """
 
     df_copy = df.copy()
     df_copy.drop(['Room_Occupancy_Count'], axis=1, inplace=True)
@@ -43,37 +114,58 @@ def get_features(df):
 
 
 def get_output(df):
-    """Get the output column from dataset"""
+
+    """
+    Gets dataset's output column.
+
+    Parameters
+    ----------
+    df : pandas.core.frame.DataFrame
+        Dataset DataFrame.
+
+    Returns
+    -------
+    pandas.core.frame.DataFrame
+        Dataset's features.
+    """
 
     output = df["Room_Occupancy_Count"]
 
     return output
 
 
-def get_number_duplicated_rows(df):
-    """Prints the number of duplicated rows in the given Dataframe"""
+def split_dataset(X, y, test_size=0.3):
 
-    num_dups = df.duplicated().sum()
+    """
+    Splits dataset's features (X) and output (y) into train and test.
 
-    print(f"Number of duplicated rows: {num_dups}")
+    Parameters
+    ----------
+    X : pandas.core.frame.DataFrame
+        Dataset's features.
 
+    y: pandas.core.series.Series
+        Dataset's output.
 
-def delete_duplicates(df):
-    """Delete duplicates from given Dataframe"""
+    test_size : float (default: 0.3)
+        Size of test set.
 
-    print("The shape of the data set before dropping duplicated:" + str(df.shape))
+    Returns
+    -------
+    X_train : pandas.core.frame.DataFrame
+        Features training data.
 
-    df.drop_duplicates(inplace=True)
+    X_test : pandas.core.frame.DataFrame
+        Features test data.
 
-    print("The shape of the data set after dropping duplicated:" + str(df.shape))
+    y_train : pandas.core.series.Series
+        Output training data.
 
+    y_test : pandas.core.series.Series
+        Output test data.
+    """
 
-def delete_csv_file(file):
-    if os.path.exists(file):
-        os.remove(file)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
+    return X_train, X_test, y_train, y_test
 
-def save_in_csv_file(df, path):
-    """Save dataframe in csv file in the given path"""
-
-    df.to_csv(path, index=False)

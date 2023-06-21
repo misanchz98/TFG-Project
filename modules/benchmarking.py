@@ -189,13 +189,13 @@ def create_benchmarking(X_train, y_train, X_test, y_test, cv=5):
 
     Parameters
     ----------
-    X_train : pandas.core.series.Series
+    X_train : pandas.core.frame.DataFrame
         Features training data.
 
     y_train : pandas.core.series.Series
         Output training data.
 
-    X_test : pandas.core.series.Series
+    X_test : pandas.core.frame.DataFrame
         Features test data.
 
     y_test : pandas.core.series.Series
