@@ -1,7 +1,6 @@
 import pandas as pd
 from modules import preprocess, tracking, evaluating
 
-
 """
 This module has all the necessary functions to conduct the
 benchmarking experiment.
@@ -17,7 +16,7 @@ def create_benchmarking_structure():
     Returns
     -------
     pandas.core.frame.DataFrame
-        Benchmarking DataFrame.
+        Empty benchmarking DataFrame.
     """
 
     df = pd.DataFrame({

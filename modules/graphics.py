@@ -1,23 +1,23 @@
 import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import numpy as np
 
-
-def plot_confusion_matrix(model, y_test, y_pred):
-    cm = confusion_matrix(y_test, y_pred, labels=model.classes_)
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=model.classes_)
-    disp.plot()
-    plt.show()
-
-
-def boxplot_df(df):
-    """Boxplot all Dataframe"""
-    plt.figure(figsize=(15, 10))
-    sns.boxplot(data=df, orient="h")
+"""
+This modules gives the essential tools to visualize
+benchmarking results.
+"""
 
 
 def plot_models_energy_consumed(df_benchmarking):
+
+    """
+    Plots benchmarking consumed energy results for each model.
+
+    Parameters
+    ----------
+    df_benchmarking : pandas.core.frame.DataFrame
+        Benchmarking DataFrame.
+    """
+
     models = ['LR', 'RF', 'SVM', 'MLP']
     codecarbon_energy = df_benchmarking['CodeCarbon (kWh)']
     eco2ai_energy = df_benchmarking['Eco2AI (kWh)']
@@ -40,11 +40,21 @@ def plot_models_energy_consumed(df_benchmarking):
 
 
 def plot_models_evaluation_metrics(df_benchmarking):
+
+    """
+    Plots benchmarking classification metrics results for each model.
+
+    Parameters
+    ----------
+    df_benchmarking : pandas.core.frame.DataFrame
+        Benchmarking DataFrame.
+    """
+
     models = ['LR', 'RF', 'SVM', 'MLP']
 
     precision = df_benchmarking['Precision']
     recall = df_benchmarking['Recall']
-    fscore = df_benchmarking['F Score']
+    f_score = df_benchmarking['F Score']
 
     n = len(models)
     x = np.arange(n)
@@ -54,7 +64,7 @@ def plot_models_evaluation_metrics(df_benchmarking):
 
     ax.bar(x - width, precision, width=width, label='Precision')
     ax.bar(x, recall, width=width, label='Recall')
-    ax.bar(x + width, fscore, width=width, label='F Score')
+    ax.bar(x + width, f_score, width=width, label='F Score')
 
     ax.set_ylim(0.99, 1)
 
