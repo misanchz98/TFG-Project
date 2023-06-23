@@ -8,8 +8,29 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 from sklearn.model_selection import RandomizedSearchCV
 import numpy as np
 
+"""
+This module presents the fundamental functions to 
+execute the model's tuning.
+"""
+
 
 def get_grid_search_LR(cv):
+
+    """
+    Creates Grid search for Logistic Regression
+    hyperparamenters tuning.
+
+    Parameters
+    ----------
+    cv :  int (default: 5)
+        Number of splits in cross-validation.
+
+    Returns
+    -------
+    sklearn.model_selection._search.GridSearchCV
+        Grid search for Logistic Regression.
+    """
+
     pipeline = Pipeline([('scaler', RobustScaler()), ('estimator', LogisticRegression())])
 
     param_grid = {
@@ -25,6 +46,22 @@ def get_grid_search_LR(cv):
 
 
 def get_grid_search_SVM(cv):
+
+    """
+    Creates Grid search for Support Vector Machine
+    hyperparamenters tuning.
+
+    Parameters
+    ----------
+    cv :  int (default: 5)
+        Number of splits in cross-validation.
+
+    Returns
+    -------
+    sklearn.model_selection._search.GridSearchCV
+        Grid search for Support Vector Machine.
+    """
+
     estimator = svm.SVC()
 
     param_grid = {
@@ -39,6 +76,22 @@ def get_grid_search_SVM(cv):
 
 
 def get_randomized_search_RF(cv):
+
+    """
+    Creates Randomized search for Random Forest
+    hyperparamenters tuning.
+
+    Parameters
+    ----------
+    cv :  int (default: 5)
+        Number of splits in cross-validation.
+
+    Returns
+    -------
+    sklearn.model_selection._search.RandomizedSearchCV
+        Randomized search for Random Forest.
+    """
+
     estimator = RandomForestClassifier()
 
     param_grid = {
@@ -56,6 +109,22 @@ def get_randomized_search_RF(cv):
 
 
 def get_randomized_search_MLP(cv):
+
+    """
+    Creates Randomized search for Multilayer Perceptron
+    hyperparamenters tuning.
+
+    Parameters
+    ----------
+    cv :  int (default: 5)
+        Number of splits in cross-validation.
+
+    Returns
+    -------
+    sklearn.model_selection._search.RandomizedSearchCV
+        Randomized search for Multilayer Perceptron.
+    """
+
     pipeline = Pipeline([('scaler', StandardScaler()), ('estimator', MLPClassifier())])
 
     param_grid = {
